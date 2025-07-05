@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CultyGPT</title>
+  <style>
+    body { font-family: sans-serif; background: #111; color: #eee; padding: 2rem; }
+    #chat { max-width: 700px; margin: auto; }
+    .msg { margin: 1rem 0; }
+    .user { color: #76c1ff; }
+    .bot { color: #ffd166; }
+  </style>
+</head>
+<body>
+  <div id="chat">
+    <div class="msg"><em>Welcome to CultyGPT. Say something unsettlingly persuasive...</em></div>
+  </div>
+  <input type="text" id="input" placeholder="Type here..." autofocus style="width: 100%; padding: 1rem; font-size: 1rem;">
+
+  <script>
+    const input = document.getElementById("input");
+    const chat = document.getElementById("chat");
+
+    input.addEventListener("keydown", async (e) => {
+      if (e.key === "Enter") {
+        const msg = input.value;
+        chat.innerHTML += `<div class="msg user"><strong>You:</strong> ${msg}</div>`;
+        input.value = "";
+
+        const res = await fetch("/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: msg })
+        });
+
+        const data = await res.json();
+        chat.innerHTML += `<div class="msg bot"><strong>CultyGPT:</strong> ${data.reply}</div>`;
+        chat.scrollTop = chat.scrollHeight;
+      }
+    });
+  </script>
+</body>
+</html>
